@@ -1,0 +1,12 @@
+diff --git a/includes/functions.php b/includes/functions.php
+index fff55d9..db61c20 100644
+--- a/includes/functions.php
++++ b/includes/functions.php
+@@ -4267,6 +4267,7 @@ function obtain_users_online_string($online_users, $item_id = 0, $item = 'forum'
+ 		$sql = 'SELECT username, username_clean, user_id, user_type, user_allow_viewonline, user_colour
+ 				FROM ' . USERS_TABLE . '
+ 				WHERE ' . $db->sql_in_set('user_id', $online_users['online_users']) . '
++				AND user_type <> ' . USER_IGNORE . '
+ 				ORDER BY username_clean ASC';
+ 
+ 		/**
