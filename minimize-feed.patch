@@ -1,0 +1,34 @@
+diff --git a/feed.php b/feed.php
+--- a/feed.php
++++ b/feed.php
+@@ -105,7 +105,7 @@ while ($row = $feed->get_item())
+ 	$published = ($feed->get('published') !== NULL) ? (int) $row[$feed->get('published')] : 0;
+ 	$updated = ($feed->get('updated') !== NULL) ? (int) $row[$feed->get('updated')] : 0;
+ 
+-	$display_attachments = ($auth->acl_get('u_download') && $auth->acl_get('f_download', $row['forum_id']) && isset($row['post_attachment']) && $row['post_attachment']) ? true : false;
++	$display_attachments = false;
+ 
+ 	$item_row = array(
+ 		'author'		=> ($feed->get('creator') !== NULL) ? $row[$feed->get('creator')] : '',
+@@ -115,7 +115,7 @@ while ($row = $feed->get_item())
+ 		'title'			=> censor_text($title),
+ 		'category'		=> ($config['feed_item_statistics'] && !empty($row['forum_id'])) ? $board_url . '/viewforum.' . $phpEx . '?f=' . $row['forum_id'] : '',
+ 		'category_name'	=> ($config['feed_item_statistics'] && isset($row['forum_name'])) ? $row['forum_name'] : '',
+-		'description'	=> censor_text($phpbb_feed_helper->generate_content($row[$feed->get('text')], $row[$feed->get('bbcode_uid')], $row[$feed->get('bitfield')], $options, $row['forum_id'], ($display_attachments ? $feed->get_attachments($row['post_id']) : array()))),
++		'description'	=> mb_strimwidth(strip_tags(censor_text($phpbb_feed_helper->generate_content($row[$feed->get('text')], $row[$feed->get('bbcode_uid')], $row[$feed->get('bitfield')], $options, $row['forum_id'], ($display_attachments ? $feed->get_attachments($row['post_id']) : array())))), 0, 150, '...'),
+ 		'statistics'	=> '',
+ 	);
+ 
+@@ -221,10 +221,10 @@ foreach ($item_vars as $row)
+ 
+ 	if (!empty($row['category']) && isset($row['category_name']) && $row['category_name'] !== '')
+ 	{
+-		echo '<category term="' . $row['category_name'] . '" scheme="' . $row['category'] . '" label="' . $row['category_name'] . '"/>' . "\n";
++		//echo '<category term="' . $row['category_name'] . '" scheme="' . $row['category'] . '" label="' . $row['category_name'] . '"/>' . "\n";
+ 	}
+ 
+-	echo '<content type="html" xml:base="' . $row['link'] . '"><![CDATA[' . "\n";
++	echo '<content type="html"><![CDATA[' . "\n";
+ 	echo $row['description'];
+ 
+ 	if (!empty($row['statistics']))
